@@ -7,7 +7,6 @@
 int fd[2];
 
 int num_generator(){
-    srand( (unsigned)time(NULL) );
     return (1 + (rand() % 100));
 }
 
@@ -82,6 +81,9 @@ ARGUMENTS:
 
     pid_t process;
 
+    //Generate random seed
+    srand( (unsigned)time(NULL) );
+    
     if ( argc != 2 ){ 
         printf( "The program needs the following arguments to work correctly:  limit_number_of_products \n" );
     }

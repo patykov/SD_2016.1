@@ -2,19 +2,61 @@
 #include <stdlib.h>
 #include <math.h>
 #include <pthread.h>
+//#include <sys/sem.h>
+#include <semaphore.h>
 
 #define LIMIT 10000000
-#define MAXIMUM_NUMBER 10000 //Max number of products consumed. (condição de parada)
+#define MAXIMUM_NUMBER 10000 //Max number of products consumed. (stop condition)
 
-long int N;
-long int M;
+int M; //Counter to the number of products consumed 
+long int N; //Size of shared memory vector
 long int *vector = NULL;
 
-void num_generator(){
+void *num_generator(void *threadid){
 	long int n = (rand() % LIMIT);
+	while(M != MAXIMUM_NUMBER){
+		//Produce
+		sem_wait(&sem_empty);
+		sem_wait(&sem_mutex);
+		//Adding resource to the vector
+		for (int i=0; i<N; i++){
+			if (vector[i] == 0){
+				vector[i] = n;
+				break;
+			}
+		}
+		sem_post(&sem_mutex);
+		sem_post(&sem_full);
+	}
+}
 
-	vector[i] = 
-		printf("%ld\n", vector[i]);
+void *num_avaliator(void *threadid){
+		while(M != MAXIMUM_NUMBER){
+		//Produce
+		sem_wait(&sem_full);
+		sem_wait(&sem_mutex);
+		//Adding resource to the vector
+		for (int i=0; i<N; i++){
+			long int n = vector[i];
+			if (n != 0){
+				//Check if it's a prime number
+				int flag = 0;
+    			for (int i=2; i<=n/2; ++i){
+        			if (n%i == 0){
+            			flag = 1;
+            			break;
+        			}
+    			}
+    			vector[i] = 0;
+    			sem_post(&sem_mutex);
+				sem_post(&sem_empty);
+				if(flag == 0)
+        			printf("%ld is a prime number.\n", n);
+    			else
+        			printf("%ld is not a prime number.\n", n);
+    			break;
+			}
+		}
 	}
 }
 
@@ -29,8 +71,8 @@ int main(int argc, char *argv[]){
 
 	N = atoi(argv[1]);
 	//Initializes the vector with 0's. 
-	vector = calloc(sizeof(long int)*N);
-	
+	vector = calloc(N, sizeof(long int));
+
 	int Np = atoi(argv[2]);
 	int Nc = atoi(argv[3]);
 
@@ -38,6 +80,14 @@ int main(int argc, char *argv[]){
 	pthread_t consumidor[Nc];
     long t;
  	int err;
+
+	sem_t *sem_mutex;
+	sem_t *sem_full;
+	sem_t *sem_empty;
+	sem_init(&sem_mutex, 0, 1);
+	sem_init(&sem_full, 0, 1);
+	sem_init(&sem_empty, 0, 1);
+
 
  	//Generate random seed
 	srand( (unsigned)time(NULL) );
@@ -60,6 +110,9 @@ int main(int argc, char *argv[]){
     }
 
     free(vector);
+    sem_close(sem_mutex);
+    sem_close(sem_full);
+    sem_close(sem_empty);
     pthread_exit(NULL);
 }
 
