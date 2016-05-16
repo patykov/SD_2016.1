@@ -28,7 +28,7 @@ void release(lock) {
 void num_generator(){
 	for (int i=0; i<N; i++){
 		vector[i] = (rand() % 200) - 100;
-		printf("%ld\n", vector[i]);
+		//printf("%ld\n", vector[i]);
 	}
 }
 
@@ -40,7 +40,7 @@ void *counter(void *threadid)
 	for (int i=0; i<n; i++){
 		if((i+initial) >= N)
 			break;
-		printf("Thread %ld, somando vetor[%d]\n",tid, i+initial);
+		//printf("Thread %ld, somando vetor[%d]\n",tid, i+initial);
 		tmp += vector[i + initial];
 		count++;
 	}
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]){
     free(vector);
     //Waiting for all the threads to finish
     while(N != count);
-    printf("A soma total foi: %0.3f\n", sum);
+    //printf("A soma total foi: %0.3f\n", sum);
     exit(0);
 }
 
