@@ -34,6 +34,7 @@ void *num_generator(void *threadid){
 		sem_post(&sem_mutex);
 		sem_post(&sem_full);
 	}
+    pthread_exit(NULL);
 }
 
 void *num_avaliator(void *threadid){
@@ -56,10 +57,10 @@ void *num_avaliator(void *threadid){
     			}
     			vector[i] = 0;
     			M++;
-				if(flag == 0)
-        			printf("%ld is a prime number. Removed from vector[%d] Thread %d\n", n, i, tid);
-    			else
-        			printf("%ld is not a prime number.Removed from vector[%d] Thread %d\n", n, i, tid);
+				//if(flag == 0)
+        			//printf("%ld is a prime number. Removed from vector[%d] Thread %d\n", n, i, tid);
+    			//else
+        			//printf("%ld is not a prime number.Removed from vector[%d] Thread %d\n", n, i, tid);
         		sleep(1);
     			break;
 			}
@@ -67,6 +68,7 @@ void *num_avaliator(void *threadid){
 		sem_post(&sem_mutex);
 		sem_post(&sem_empty);
 	}
+    pthread_exit(NULL);
 }
 
 

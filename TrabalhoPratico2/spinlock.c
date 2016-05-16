@@ -46,9 +46,7 @@ void *counter(void *threadid)
 	acquire(lock);
 	sum += tmp;
 	count += n;
-	printf("Soma atual: %lld\n", sum);
 	release(lock);
-	printf("Apos o release, com count = %ld\n", count);
    	pthread_exit(NULL);
 }
 
@@ -90,10 +88,9 @@ int main(int argc, char *argv[]){
       	}
     }
     free(vector);
-    printf("apos free(vector)\n");
     //Waiting for all the threads to finish
     while(N > count);
-    printf("A soma total foi: %0.3lld\n", sum);
+    //printf("A soma total foi: %0.3lld\n", sum);
     exit(0);
 }
 
