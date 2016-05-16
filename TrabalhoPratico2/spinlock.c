@@ -92,6 +92,7 @@ int main(int argc, char *argv[]){
     //Waiting for all the threads to finish
     while(N != count);
     printf("A soma total foi: %0.3f\n", sum);
-    pthread_exit(NULL);
+    exit(0);
+    //pthread_exit(NULL);
 }
 

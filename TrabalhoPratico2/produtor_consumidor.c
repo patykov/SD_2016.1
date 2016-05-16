@@ -6,7 +6,7 @@
 #include <semaphore.h>
 
 #define LIMIT 10000000
-#define MAXIMUM_NUMBER 50 //Max number of products consumed. (stop condition)
+#define MAXIMUM_NUMBER 20 //Max number of products consumed. (stop condition)
 
 int M; //Counter to the number of products consumed 
 long int N; //Size of shared memory vector
@@ -26,9 +26,8 @@ void *num_generator(void *threadid){
 		//Adding resource to the vector
 		for (int i=0; i<N; i++){
 			if (vector[i] == 0){
-				printf("Thread %d produtora adicionando o numero: %d \n", tid, n );
 				vector[i] = n;
-				printf("vector[%d, %d, %d, %d]\n", vector[0],vector[1],vector[2],vector[3]);
+				printf("Thread %d produtora adicionando o numero: %d. Vector[%d, %d, %d, %d]\n", tid, n, vector[0],vector[1],vector[2],vector[3]);
 				sleep(1);
 				break;
 			}
@@ -46,7 +45,7 @@ void *num_avaliator(void *threadid){
 		sem_wait(&sem_mutex);
 		int flag = 0;
 		//Consume an item
-		for (int i=(N-1); i>=0; i--){
+		for (int i=0; i<N; i++){
 			long int n = vector[i];
 			if (n != 0){
 				//Check if it's a prime number
@@ -63,11 +62,11 @@ void *num_avaliator(void *threadid){
     			else
         			printf("%ld is not a prime number.Removed from vector[%d] Thread %d\n", n, i, tid);
         		sleep(1);
-        		sem_post(&sem_mutex);
-				sem_post(&sem_empty);
     			break;
 			}
 		}
+		sem_post(&sem_mutex);
+		sem_post(&sem_empty);
 	}
 }
 
