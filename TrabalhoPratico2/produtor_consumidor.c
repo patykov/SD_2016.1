@@ -6,7 +6,7 @@
 #include <semaphore.h>
 
 #define LIMIT 10000000
-#define MAXIMUM_NUMBER 20 //Max number of products consumed. (stop condition)
+#define MAXIMUM_NUMBER 10000 //Max number of products consumed. (stop condition)
 
 int M; //Counter to the number of products consumed 
 long int N; //Size of shared memory vector
@@ -27,8 +27,7 @@ void *num_generator(void *threadid){
 		for (int i=0; i<N; i++){
 			if (vector[i] == 0){
 				vector[i] = n;
-				printf("Thread %d produtora adicionando o numero: %d. Vector[%d, %d, %d, %d]\n", tid, n, vector[0],vector[1],vector[2],vector[3]);
-				sleep(1);
+				//printf("Thread %d produtora adicionando o numero: %d. Vector[%d, %d, %d, %d]\n", tid, n, vector[0],vector[1],vector[2],vector[3]);
 				break;
 			}
 		}

@@ -10,7 +10,7 @@ int lock = UNLOCKED;
 long int *vector = NULL;
 long int count = 0;
 long int N;
-double sum = 0;
+long long int sum = 0;
 int n;
 
 int TestAndSet(int* spinlock) {
@@ -28,7 +28,7 @@ void release(lock) {
 void num_generator(){
 	for (int i=0; i<N; i++){
 		vector[i] = (rand() % 200) - 100;
-		//printf("%ld\n", vector[i]);
+		//printf("Numero gerado: %ld\n", vector[i]);
 	}
 }
 
@@ -42,12 +42,13 @@ void *counter(void *threadid)
 			break;
 		//printf("Thread %ld, somando vetor[%d]\n",tid, i+initial);
 		tmp += vector[i + initial];
-		count++;
 	}
 	acquire(lock);
 	sum += tmp;
+	count += n;
+	printf("Soma atual: %lld\n", sum);
 	release(lock);
-
+	printf("Apos o release, com count = %ld\n", count);
    	pthread_exit(NULL);
 }
 
@@ -89,9 +90,10 @@ int main(int argc, char *argv[]){
       	}
     }
     free(vector);
+    printf("apos free(vector)\n");
     //Waiting for all the threads to finish
-    while(N != count);
-    //printf("A soma total foi: %0.3f\n", sum);
+    while(N > count);
+    printf("A soma total foi: %0.3lld\n", sum);
     exit(0);
 }
 
