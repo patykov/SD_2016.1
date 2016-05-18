@@ -5,8 +5,8 @@ import threading
 from threading import Thread
 
 mdelay = timedelta(0)
-num_thread = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30]
-num_vector = [8, 9, 10]
+num_thread = [15, 20, 30]
+num_vector = [10]
 
 print "Spinlock\n"
 #For "spinlock.c"

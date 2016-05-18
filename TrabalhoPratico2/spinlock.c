@@ -90,7 +90,7 @@ int main(int argc, char *argv[]){
     //Waiting for all the threads to finish
     while(N > count);
     free(vector);
-    printf("A soma total foi: %0.3ld\n", sum);
+    //printf("A soma total foi: %0.3ld\n", sum);
     exit(0);
 }
 
