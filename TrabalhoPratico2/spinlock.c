@@ -10,7 +10,7 @@ int lock = UNLOCKED;
 long int *vector = NULL;
 long int count = 0;
 long int N;
-long long int sum = 0;
+long int sum = 0;
 int n;
 
 int TestAndSet(int* spinlock) {
@@ -87,10 +87,10 @@ int main(int argc, char *argv[]){
         	exit(-1);
       	}
     }
-    free(vector);
     //Waiting for all the threads to finish
     while(N > count);
-    //printf("A soma total foi: %0.3lld\n", sum);
+    free(vector);
+    printf("A soma total foi: %0.3ld\n", sum);
     exit(0);
 }
 
