@@ -5,7 +5,7 @@ import threading
 from threading import Thread
 
 mdelay = timedelta(0)
-num_thread = [[2, 2], [5, 5], [10, 10], [2, 10], [10, 2]]
+num_thread = [[1, 1], [2, 2], [5, 5], [10, 10], [2, 10], [10, 2]]
 num_vector = [2, 4, 8, 16, 32]
 
 #For "producer_consumer.c"

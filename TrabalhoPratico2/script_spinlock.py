@@ -5,7 +5,7 @@ import threading
 from threading import Thread
 
 mdelay = timedelta(0)
-num_thread = [15, 20, 30]
+num_thread = [30]
 num_vector = [10]
 
 print "Spinlock\n"
@@ -27,3 +27,6 @@ for k in num_thread:
 		print "Numero de threads: " + str(k) + " Tamanho do vetor: 10^" + str(N) + " Tempo medio total: " + str(mdelay/10) + "\n\n"
 		mdelay = timedelta(0)
 
+
+#Numero de threads: 15 Tamanho do vetor: 10^10 Tempo medio total: 0:00:39.768043
+#Numero de threads: 20 Tamanho do vetor: 10^10 Tempo medio total: 0:00:38.992455
