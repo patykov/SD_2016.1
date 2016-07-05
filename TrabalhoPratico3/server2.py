@@ -1,34 +1,34 @@
-#from xmlrpc.server import SimpleXMLRPCServer
-#from xmlrpc.server import SimpleXMLRPCRequestHandler
-import xmlrpclib
 from SimpleXMLRPCServer import SimpleXMLRPCServer
-from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
 
-# Restrict to a particular path.
-class RequestHandler(SimpleXMLRPCRequestHandler):
-    rpc_paths = ('/RPC2',)
+server = SimpleXMLRPCServer(("localhost", 8000))
 
-# Create server
-server = SimpleXMLRPCServer(("localhost", 8000),
-                            requestHandler=RequestHandler)
-server.register_introspection_functions()
+queue = []
 
-# Register pow() function; this will use the value of
-# pow.__name__ as the name, which is just 'pow'.
-server.register_function(pow)
+def receive_msg(msg, myTime, myId):
+	#REQUEST
+	if (msg == 1):
+		if(len(queue) == 0):
+			ENVIA GRANT
+		queue.append(myTime)
 
-# Register a function under a different name
-def adder_function(x,y):
-    return x + y
-server.register_function(adder_function, 'add')
+	#RELEASE
+	elif(msg == 2):
+		queue.remove(myTime)
+		if (len(queue) > 0):
+			ENVIA GRANT PARA queue[0].
 
-# Register an instance; all the methods of the instance are
-# published as XML-RPC methods (in this case, just 'mul').
-class MyFuncs:
-    def mul(self, x, y):
-        return x * y
+	else
+		print "Error"
+		exit(1)
+    
+    return 
+server.register_function(receive_msg, 'send_msg')
 
-server.register_instance(MyFuncs())
 
-# Run the server's main loop
-server.serve_forever()
+
+try:
+    print 'Use Control-C to exit'
+    server.serve_forever()
+except KeyboardInterrupt:
+	
+    print 'Exiting'
