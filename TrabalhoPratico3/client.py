@@ -1,6 +1,5 @@
 import xmlrpclib
 import sys
-import time
 import math
 from threading import Thread
 from datetime import datetime, timedelta
@@ -8,18 +7,15 @@ from random import randrange
 
 N = 10 #10^8
 vector = [0]*N
+server = xmlrpclib.ServerProxy('http://localhost:8000')
 
-if len(sys.argv) != 4:
-    print "Verify the functions parameters.\n"
-    exit(1)
+if (len(sys.argv) != 4):
+	print "Verify the functions parameters.\n"
+  	exit(1)
 else:
 	K = int(sys.argv[1])
 	OP = int(sys.argv[2])  # 1 = Add; 2 = Pow; 3 = Mul
 	X = int(sys.argv[3])
-
-
-mdelay = timedelta(0)
-tempo1 = datetime.now()
 
 def divide_vector(n, k):
 	n_p_threads = math.ceil(n/k)
@@ -32,60 +28,57 @@ def add_random_number(inicio, fim):
 		vector[i] = randrange(0, 100)
 
 def rpc_call(inicio, fim, x):
-	server = xmlrpclib.ServerProxy('http://localhost:8000')
 	if(OP == 1):
-		for i in range(inicio, fim):
-			vector[i] = server.add(vector[i], x)
+		vector[inicio:fim] = server.add(vector[inicio:fim], x)
 	elif(OP == 2):
-		for i in range(inicio, fim):
-			vector[i] = server.pow(vector[i], x)
+		vector[inicio:fim] = server.mypow(vector[inicio:fim], x)
 	elif(OP == 3):
-		for i in range(inicio, fim):
-			vector[i] = server.mul(vector[i], x)
+		vector[inicio:fim] = server.mul(vector[inicio:fim], x)
 	else:
 		print "Operation not valid! Please select: 1 = Add; 2 = Pow; 3 = Mul."
 
-number_per_threads = divide_vector(N, K)
-i = 0
-threads = []
+def save_file(time):
+	with open("/Users/admin/Documents/UFRJ/SD/SD_2016.1/TrabalhoPratico3/log.txt", "a") as file:
+		file.write(str(time) + "\n")
 
-#Populate the vector with random numbers
-while(i<N):
-	f = i + number_per_threads
-	if(f>=N):
-		f = N
-	t = Thread(target=add_random_number, args=(i, f))
-	t.start()
-	i += number_per_threads
-	threads.append(t)
 
-for t in threads:
-	t.join()
+if __name__ == "__main__":
+	number_per_threads = divide_vector(N, K)
+	i = 0
+	threads = []
+	#Populate the vector with random numbers
+	while(i<N):
+		f = i + number_per_threads
+		if(f>=N):
+			f = N
+		t = Thread(target=add_random_number, args=(i, f))
+		t.start()
+		i += number_per_threads
+		threads.append(t)
+	for t in threads:
+		t.join()
+	del threads[:]
 
-del threads[:]
+	#Calculating time
+	mdelay = timedelta(0)
+	tempo1 = datetime.now()
 
-for i in vector:
-	print i
+	i = 0
+	#Call rpc function for each thread
+	while(i<N):
+		f = i + number_per_threads
+		if(f>=N):
+			f = N
+		t = Thread(target=rpc_call, args=(i, f, X))
+		t.start()
+		i += number_per_threads
+		threads.append(t)
+	for t in threads:
+		t.join()
 
-i = 0
-#Call rpc function for each thread
-while(i<N):
-	f = i + number_per_threads
-	if(f>=N):
-		f = N
-	t = Thread(target=rpc_call, args=(i, f, X))
-	t.start()
-	i += number_per_threads
-	threads.append(t)
 
-for t in threads:
-	t.join()
+	tempo2 = datetime.now()   
+	mdelay = mdelay + (tempo2 - tempo1)
+	save_file(mdelay)
 
-print "_______________"
-for i in vector:
-	print i
-
-tempo2 = datetime.now()   
-mdelay = mdelay + (tempo2 - tempo1)
-print mdelay
 

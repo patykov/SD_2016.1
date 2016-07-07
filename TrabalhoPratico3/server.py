@@ -3,14 +3,23 @@ from SimpleXMLRPCServer import SimpleXMLRPCServer
 
 server = SimpleXMLRPCServer(("localhost", 8000))
 
-server.register_function(pow)
 
-def adder_function(x,y):
-    return x + y
+def adder_function(vector, x):
+    for i in range(len(vector)):
+    	vector[i] += x
+    return vector
 server.register_function(adder_function, 'add')
 
-def mul_function(x, y):
-        return x * y
+def pow_function(vector, x):
+    for i in range(len(vector)):
+    	vector[i] = pow(vector[i], x)
+    return vector
+server.register_function(pow_function, 'mypow')
+
+def mul_function(vector, x):
+    for i in range(len(vector)):
+    	vector[i] = vector[i] * x
+    return vector
 server.register_function(mul_function, 'mul')
 
 
