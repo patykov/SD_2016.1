@@ -5,7 +5,7 @@ from threading import Thread
 from datetime import datetime, timedelta
 from random import randrange
 
-N = 10 #10^8
+N = 100000000 #10^8
 vector = [0]*N
 server = xmlrpclib.ServerProxy('http://localhost:8000')
 
