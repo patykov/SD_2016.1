@@ -1,6 +1,5 @@
 import xmlrpclib
 import sys
-import math
 from threading import Thread
 from datetime import datetime, timedelta
 import numpy.random as nprnd
@@ -43,7 +42,6 @@ else:
 
 
 if __name__ == "__main__":
-	#number_per_threads = divide_vector(N, K)
 	sizes = divide_vector(N, K)
 	threads = []
 

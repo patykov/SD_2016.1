@@ -1,10 +1,24 @@
 import rpyc
 import sys
-import math
 from threading import Thread
 from datetime import datetime, timedelta
-import numpy.random as nprnd
+import numpy as np
+from cStringIO import StringIO 
+from numpy.lib import format 
 
+
+rpyc.core.protocol.DEFAULT_CONFIG['allow_pickle'] = True
+
+def from_string(s): 
+    f = StringIO(s) 
+    arr = format.read_array(f) 
+    return arr 
+
+def to_string(arr): 
+    f = StringIO() 
+    format.write_array(f, arr) 
+    s = f.getvalue() 
+    return s 
 
 def divide_vector(n, k):
 	sizes = []
@@ -14,24 +28,25 @@ def divide_vector(n, k):
 	return sizes
 
 def rpc_call(inicio, fim, x):
+	string_vec = to_string(vector[inicio:fim])
 	if(OP == 1):
-		vector[inicio:fim] = server.root.exposed_add(vector[inicio:fim], x)
+		vector[inicio:fim] = from_string( server.root.exposed_add(string_vec, x) )
 	elif(OP == 2):
-		vector[inicio:fim] = server.root.exposed_pow(vector[inicio:fim], x)
+		vector[inicio:fim] = from_string( server.root.exposed_pow(string_vec, x) )
 	elif(OP == 3):
-		vector[inicio:fim] = server.root.exposed_mul(vector[inicio:fim], x)
+		vector[inicio:fim] = from_string( server.root.exposed_mul(string_vec, x) )
 	else:
 		print "Operation not valid! Please select: 1 = Add; 2 = Pow; 3 = Mul."
 
-def save_file(time):
-	with open("/Users/admin/Documents/UFRJ/SD/SD_2016.1/TrabalhoPratico3/Q1/log.txt", "a") as file:
-		file.write(str(time) + "\n")
+# def save_file(time):
+# 	with open("/Users/admin/Documents/UFRJ/SD/SD_2016.1/TrabalhoPratico3/Q1/rpyc_log.txt", "a") as file:
+# 		file.write(str(time) + "\n")
 
 
-N = 100000000 #10^8
-np_vector = nprnd.randint(100, size=N) #Initialize vector with random numbers
-vector = np_vector.tolist()            #Transform the numpy array into a simple python list
-server = rpyc.connect("localhost", 18861)
+N = 10000000 #10^7
+vector = np.random.randint(100, size=N) #Initialize vector with random numbers
+#vector = np_vector.tolist()            #Transform the numpy array into a simple python list
+server = rpyc.connect("localhost", 18862)
 
 if (len(sys.argv) != 4):
 	print "Verify the functions parameters.\n"
@@ -43,14 +58,11 @@ else:
 
 
 if __name__ == "__main__":
-	#number_per_threads = divide_vector(N, K)
 	sizes = divide_vector(N, K)
 	threads = []
-
 	#Calculating time
 	mdelay = timedelta(0)
 	tempo1 = datetime.now()
-	print tempo1
 
 	i = 0
 	#Call rpc function for each thread
@@ -64,6 +76,6 @@ if __name__ == "__main__":
 
 	tempo2 = datetime.now()
 	mdelay = (tempo2 - tempo1)
-	save_file(mdelay)
+	print ("Numero de threads: " + str(K) + " Operacao: " + str(OP) + " Tempo: " + str(mdelay) + "\n")
 	exit(0)
 
