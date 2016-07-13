@@ -41,8 +41,6 @@ def send_to_coordinator(myTime):
 
 
 
-
-
 if __name__ == "__main__":
 	processes = []
 	for i in range(0, K):

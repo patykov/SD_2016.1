@@ -1,4 +1,4 @@
-import xmlrpclib
+import rpyc
 import sys
 import math
 from threading import Thread
@@ -15,11 +15,11 @@ def divide_vector(n, k):
 
 def rpc_call(inicio, fim, x):
 	if(OP == 1):
-		vector[inicio:fim] = server.add(vector[inicio:fim], x)
+		vector[inicio:fim] = server.root.exposed_add(vector[inicio:fim], x)
 	elif(OP == 2):
-		vector[inicio:fim] = server.mypow(vector[inicio:fim], x)
+		vector[inicio:fim] = server.root.exposed_pow(vector[inicio:fim], x)
 	elif(OP == 3):
-		vector[inicio:fim] = server.mul(vector[inicio:fim], x)
+		vector[inicio:fim] = server.root.exposed_mul(vector[inicio:fim], x)
 	else:
 		print "Operation not valid! Please select: 1 = Add; 2 = Pow; 3 = Mul."
 
@@ -28,10 +28,10 @@ def save_file(time):
 		file.write(str(time) + "\n")
 
 
-N = 10000000 #10^8
+N = 100000000 #10^8
 np_vector = nprnd.randint(100, size=N) #Initialize vector with random numbers
 vector = np_vector.tolist()            #Transform the numpy array into a simple python list
-server = xmlrpclib.ServerProxy('http://localhost:8000')
+server = rpyc.connect("localhost", 18861)
 
 if (len(sys.argv) != 4):
 	print "Verify the functions parameters.\n"
@@ -50,6 +50,7 @@ if __name__ == "__main__":
 	#Calculating time
 	mdelay = timedelta(0)
 	tempo1 = datetime.now()
+	print tempo1
 
 	i = 0
 	#Call rpc function for each thread
@@ -65,5 +66,4 @@ if __name__ == "__main__":
 	mdelay = (tempo2 - tempo1)
 	save_file(mdelay)
 	exit(0)
-
 
