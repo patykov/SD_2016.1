@@ -1,36 +1,22 @@
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-
-server = SimpleXMLRPCServer(("localhost", 8000))
+import rpyc
 
 queue = []
 
-def receive_request(myTime, myId):
-	queue.append(myId)
-	print("add na fila" + str(myId))
-	while True:
-		if((len(queue) == 0) or (queue[0] == myId)):
-			print("enviei o GRANT" + str(myId))
-			return 1 #GRANT
+class MyServer(rpyc.Service):
 
-server.register_function(receive_request, 'ask_request')
+	def exposed_ask_request(self, myTime, myId):
+		queue.append(myId)
+		while True:
+			if((len(queue) == 0) or (queue[0] == myId)):
+				return 1 #GRANT
 
-
-def receive_release(myTime, myId):
-	print("removi da fila" + str(myId))
-	del queue[0]
-	print queue
-	return 1 #SLEEP
+	def exposed_send_release(self, myTime, myId):
+		del queue[0]
+		return 1 #SLEEP
 		    
-server.register_function(receive_release, 'send_release')
-
-def aff():
-	print("uhuuul")
-server.register_function(aff, 'printando')
 
 
-try:
-    print 'Use Control-C to exit'
-    server.serve_forever()
-except KeyboardInterrupt:
-	
-    print 'Exiting'
+if __name__ == "__main__":
+    from rpyc.utils.server import ThreadedServer
+    t = ThreadedServer(MyServer, port = 18860)
+    t.start()
