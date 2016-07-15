@@ -21,8 +21,7 @@ def to_string(arr):
 class MyServer(rpyc.Service):
 
 	def exposed_add(self, str_vec, x):
-		my_str_vec = copy.deepcopy(str_vec)
-		vector = from_string(my_str_vec)
+		vector = from_string(str_vec)
 		size = len(vector)
 		blocksize = int(math.ceil(size/8))
 		for i in xrange(0, (blocksize*8), 8):
@@ -40,8 +39,7 @@ class MyServer(rpyc.Service):
 		return to_string(vector)
 
 	def exposed_pow(self, str_vec, x):
-		my_str_vec = copy.deepcopy(str_vec)
-		vector = from_string(my_str_vec)
+		vector = from_string(str_vec)
 		size = len(vector)
 		blocksize = int(math.ceil(size/8))
 		for i in xrange(0, (blocksize*8), 8):
@@ -59,8 +57,7 @@ class MyServer(rpyc.Service):
 		return to_string(vector)
 
 	def exposed_mul(self, str_vec, x):
-		my_str_vec = copy.deepcopy(str_vec)
-		vector = from_string(my_str_vec)
+		vector = from_string(str_vec)
 		size = len(vector)
 		blocksize = int(math.ceil(size/8))
 		for i in xrange(0, (blocksize*8), 8):
